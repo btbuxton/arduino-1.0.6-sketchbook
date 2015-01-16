@@ -18,7 +18,16 @@
 #define ERROR_PIECE 3
 
 const word SQUARE_SIZE = min(MAX_X,MAX_Y) / SIZE;
-const short DIRS[8][2] = {{0,-1},{1,-1},{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1}};
+const short DIRS[8][2] = {
+  { 0,-1 }
+  ,{ 1,-1 }
+  ,{ 1,0 }
+  ,{ 1,1 }
+  ,{ 0,1 }
+  ,{ -1,1 }
+  ,{ -1,0 }
+  ,{ -1,-1 }
+};
 byte REVERSI[SIZE][SIZE];
 byte CURRENT_PLAYER;
 bool GAME_OVER;
@@ -44,7 +53,8 @@ void get_score(byte *black_score, byte *white_score, byte board[SIZE][SIZE]) {
       byte value = board[x][y];
       if (value == BLACK_PIECE) {
         (*black_score)++;
-      } else if (value == WHITE_PIECE) {
+      } 
+      else if (value == WHITE_PIECE) {
         (*white_score)++;
       }
     }
@@ -67,14 +77,15 @@ void update_status(byte turn, byte board[SIZE][SIZE]) {
   char *which_player = "";
   if (turn == BLACK_PIECE) {
     which_player = "Black's Turn";
-  } else {
+  } 
+  else {
     which_player = "White's Turn";
   }
   if (GAME_OVER) {
     which_player = "Game Over";
   }
   Tft.drawString(which_player, SQUARE_SIZE, SQUARE_SIZE * 8 + half, 2, BLACK);
-    
+
   byte white_score = 0;
   byte black_score = 0;
   get_score(&black_score, &white_score, board);
@@ -92,13 +103,16 @@ void update_board(byte board[SIZE][SIZE]) {
       word pos_y = y * SQUARE_SIZE + half;
       if (board[x][y] == BLACK_PIECE) {
         Tft.fillCircle(pos_x, pos_y, half - 2, BLACK);
-      } else if (board[x][y] == WHITE_PIECE) {
+      } 
+      else if (board[x][y] == WHITE_PIECE) {
         Tft.fillCircle(pos_x, pos_y, half - 2, WHITE);
         Tft.drawCircle(pos_x, pos_y, half - 2, BLACK);
-      } else if (board[x][y] == ERROR_PIECE) {
+      } 
+      else if (board[x][y] == ERROR_PIECE) {
         Tft.fillCircle(pos_x, pos_y, half - 2, RED);
         board[x][y] = BLANK;
-      } else {
+      } 
+      else {
         //Tft.fillRectangle(pos_x - half + 1, pos_y - half + 1, SQUARE_SIZE - 1, SQUARE_SIZE- 1, GREEN);
         Tft.fillCircle(pos_x, pos_y, half - 2, GREEN);
       }
@@ -121,7 +135,8 @@ bool pressed(byte turn, byte board[SIZE][SIZE], word pos_x, word pos_y) {
   if (flip(board, turn, x, y, true) == 0) {
     flash_error(board,x,y);
     return false;
-  } else {
+  } 
+  else {
     board[x][y] = turn;
     return true;
   }
@@ -130,7 +145,8 @@ bool pressed(byte turn, byte board[SIZE][SIZE], word pos_x, word pos_y) {
 void switch_turn(byte* turn) {
   if (*turn == BLACK_PIECE) {
     *turn = WHITE_PIECE;
-  } else {
+  } 
+  else {
     *turn = BLACK_PIECE;
   }
 }
@@ -138,11 +154,14 @@ void switch_turn(byte* turn) {
 bool is_in_bounds(short x, short y) {
   if (x < 0) {
     return false;
-  } else if (x >= SIZE) {
+  } 
+  else if (x >= SIZE) {
     return false;
-  } else if (y < 0) {
+  } 
+  else if (y < 0) {
     return false;
-  } else if (y >= SIZE) {
+  } 
+  else if (y >= SIZE) {
     return false;
   }
   return true;
@@ -173,9 +192,11 @@ unsigned char flip_opp(byte board[SIZE][SIZE], byte turn, short x, short y, shor
   byte value = board[x][y];
   if (value == turn) {
     return to_flip;
-  } else if (value == BLANK) {
+  } 
+  else if (value == BLANK) {
     return 0;
-  } else {
+  } 
+  else {
     unsigned char thus_far = flip_opp(board, turn, x + dir_x, y + dir_y, dir_x, dir_y, to_flip + 1, do_it);
     if (do_it && thus_far > 0) {
       board[x][y] = turn;
@@ -205,8 +226,8 @@ void start_game() {
 }
 
 void setup() {
-  Tft.init();
   Serial.begin(9600);
+  Tft.init();
   start_game();
 }
 
@@ -231,5 +252,6 @@ void loop() {
     update_board(REVERSI);
     update_status(CURRENT_PLAYER, REVERSI);
   }
-  
+
 }
+

@@ -51,12 +51,21 @@ Person* Person::paint() {
 }
 
 Person* Person::clear() {
-  delay(10);
+  //delay(10);
   //Tft.setPixel(x,y, BLACK);
   return this;
 }
 
-unsigned int MAX_PEOPLE = 4;
+int rgb(byte r, byte g, byte b) {
+  //5/6/5
+  float fr=(float)r / 255;
+  float fg=(float)g / 255;
+  float fb=(float)b / 255;
+  return ((int)(fr * 31) << 11) + ((int)(fg * 63) << 5) + ((int)(fb * 31));
+}
+
+
+unsigned int MAX_PEOPLE = 32;
 Person **people;
 
 void setup() {
@@ -66,10 +75,19 @@ void setup() {
   randomSeed(analogRead(0));
   
   people = new Person*[MAX_PEOPLE];
-  people[0]=new Person(MAX_X/2,MAX_Y/2, 0, BLUE);
-  people[1]=new Person(MAX_X/2,MAX_Y/2, 90 * DEGREE, YELLOW);
-  people[2]=new Person(MAX_X/2,MAX_Y/2, 180 * DEGREE, RED);
-  people[3]=new Person(MAX_X/2,MAX_Y/2, 270 * DEGREE, GREEN);
+  float deg_step = 360 / MAX_PEOPLE;
+  float color_step = 512 / MAX_PEOPLE;
+  for (int i=0; i < MAX_PEOPLE; i++) {
+    int color_content = color_step * i;
+    unsigned int color = 0;
+    if (color_content > 255) {
+      color_content -= 255;
+      color = rgb(255 - color_content, 0, 0);
+    } else {
+      color = rgb(0, 0, 255 - color_content);
+    }
+    people[i]=new Person(MAX_X/2,MAX_Y/2, i * deg_step * DEGREE, color);
+  }
 }
 
 void loop() {

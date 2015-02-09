@@ -28,18 +28,18 @@ float START = 0;
 
 void loop() {
   float circle = 360 * DEGREE;
-  int color = BLACK;
+  int color = YELLOW;
   int radius = max(MAX_X,MAX_Y);
   for (float deg = START; deg < circle+START; deg+=DEGREE*4) {
     float var = 0;
     float dir = DEGREE / 2;
     float max_dir = DEGREE * 5;
-    color = color == BLACK ? BLUE : BLACK;
+    color = color == YELLOW ? BLUE : YELLOW;
     for (float i=0; i <= radius; i++) {
       var += dir;
       dir = abs(var) >= max_dir ? -dir : dir;
-      int x = MAX_X/2+cos(deg+var)*i;
-      int y = MAX_Y/2+sin(deg+var)*i;
+      int x = MAX_X/2 + cos(deg+var)*i;
+      int y = MAX_Y/2 + sin(deg+var)*i;
       if (x < MIN_X || y < MIN_Y || x > MAX_X || y > MAX_Y) {
         break;
       }
@@ -48,5 +48,3 @@ void loop() {
   }
   START += DEGREE;
 }
-
-

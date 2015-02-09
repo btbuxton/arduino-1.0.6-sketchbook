@@ -11,6 +11,7 @@ class Person {
   float y;
   unsigned int color;
   float dir;
+  float dir_step;
   
   Person* check_bounds();
   
@@ -29,10 +30,10 @@ Person::Person(float x,float y, float dir, unsigned int color) {
 }
 
 Person* Person::check_bounds() {
-  x = x < 0 ? MAX_X : x;
-  x = x > MAX_X ? 0 : x;
-  y = y < 0 ? MAX_Y : y;
-  y = y > MAX_Y ? 0 : y;
+  if (x < 0 || x >= MAX_X || y < 0 || y >= MAX_Y) {
+    x = MAX_X / 2;
+    y = MAX_Y / 2;
+  }
   return this;
 }
 
@@ -40,8 +41,8 @@ Person* Person::move() {
   x += cos(dir);
   y += sin(dir);
   check_bounds();
-  float rand = random(-1,2);
-  dir += rand * 5 * DEGREE;
+  float rand = random(-30,31);
+  dir += rand * DEGREE;
   return this;
 }
 
@@ -65,7 +66,7 @@ int rgb(byte r, byte g, byte b) {
 }
 
 
-unsigned int MAX_PEOPLE = 32;
+unsigned int MAX_PEOPLE = 16;
 Person **people;
 
 void setup() {
@@ -76,16 +77,10 @@ void setup() {
   
   people = new Person*[MAX_PEOPLE];
   float deg_step = 360 / MAX_PEOPLE;
-  float color_step = 512 / MAX_PEOPLE;
+  float color_step = 256 / MAX_PEOPLE;
   for (int i=0; i < MAX_PEOPLE; i++) {
     int color_content = color_step * i;
-    unsigned int color = 0;
-    if (color_content > 255) {
-      color_content -= 255;
-      color = rgb(255 - color_content, 0, 0);
-    } else {
-      color = rgb(0, 0, 255 - color_content);
-    }
+    unsigned int color = rgb(0, 0, color_content);
     people[i]=new Person(MAX_X/2,MAX_Y/2, i * deg_step * DEGREE, color);
   }
 }
